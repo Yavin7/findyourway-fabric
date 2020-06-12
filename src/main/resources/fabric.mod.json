@@ -26,7 +26,6 @@
     ]
   },
   "mixins": [
-    "findyourway.mixins.json"
   ],
 
   "depends": {

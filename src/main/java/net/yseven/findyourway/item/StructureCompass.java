@@ -13,7 +13,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPropertyGetter;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
@@ -44,8 +43,7 @@ public class StructureCompass extends Item {
 
             @Environment(EnvType.CLIENT)
             public float call(ItemStack stack, @Nullable World world, @Nullable LivingEntity user) {
-                if(!stack.hasTag()) {stack.setTag(new CompoundTag());}
-                if (user == null && !stack.isInFrame() || stack.getTag().isEmpty()) {
+                if (user == null && !stack.isInFrame() || !stack.hasTag()) {
                     return 0.0F;
                 } else {
                     boolean bl = user != null;
@@ -94,10 +92,10 @@ public class StructureCompass extends Item {
 
             @Environment(EnvType.CLIENT)
             private double getAngleToTarget(World world, Entity entity, String target, ItemStack stack) {
-                if(!stack.getTag().contains("posx")){
-                    return 0;
+                if(stack.getTag().contains("posX") && stack.getTag().contains("posZ")){
+                    return Math.atan2((double) stack.getTag().getInt("posZ") - entity.getZ(), (double) stack.getTag().getInt("posX") - entity.getX());
                 } else {
-                    return Math.atan2((double) stack.getTag().getInt("posX") - entity.getZ(), (double) stack.getTag().getInt("posX") - entity.getX());
+                    return 0.0;
                 }
             }
         });

@@ -21,11 +21,23 @@ public class FindYourWay implements ModInitializer {
 
 	public static final StructureCompass ENDER_COMPASS = new StructureCompass("Stronghold", DimensionType.OVERWORLD,
 			new Item.Settings().group(ItemGroup.TOOLS).maxCount(1));
+	public static final StructureCompass FORTRESS_COMPASS = new StructureCompass("Fortress", DimensionType.THE_NETHER,
+			new Item.Settings().group(ItemGroup.TOOLS).maxCount(1));	
+	public static final StructureCompass MANSION_COMPASS = new StructureCompass("Mansion", DimensionType.OVERWORLD,
+			new Item.Settings().group(ItemGroup.TOOLS).maxCount(1));
+	public static final StructureCompass MONUMENT_COMPASS = new StructureCompass("Monument", DimensionType.OVERWORLD,
+			new Item.Settings().group(ItemGroup.TOOLS).maxCount(1));
+	public static final StructureCompass VILLAGE_COMPASS = new StructureCompass("Village", DimensionType.OVERWORLD,
+			new Item.Settings().group(ItemGroup.TOOLS).maxCount(1));
 
 	@Override
 	public void onInitialize() {
 		Registry.register(Registry.ITEM, new Identifier("findyourway", "ender_compass"), ENDER_COMPASS);
-
+		Registry.register(Registry.ITEM, new Identifier("findyourway", "fortress_compass"), FORTRESS_COMPASS);
+		Registry.register(Registry.ITEM, new Identifier("findyourway", "mansion_compass"), MANSION_COMPASS);
+		Registry.register(Registry.ITEM, new Identifier("findyourway", "monument_compass"), MONUMENT_COMPASS);
+		Registry.register(Registry.ITEM, new Identifier("findyourway", "village_compass"), VILLAGE_COMPASS);
+	
 		ServerSidePacketRegistry.INSTANCE.register(PROVIDE_FEATURE_POSITION_ID, (packetContext, attachedData) -> {
 			BlockPos pos = attachedData.readBlockPos();
 			String featureType = attachedData.readString();
@@ -40,8 +52,8 @@ public class FindYourWay implements ModInitializer {
 					CompoundTag tag = new CompoundTag();
                     tag.putInt("posX", featureLocation.getX());
 					tag.putInt("posZ", featureLocation.getZ());
-					packetContext.getPlayer().inventory.getInvStack(invSlot).getItem().shouldSyncTagToClient();
-					
+					packetContext.getPlayer().inventory.getInvStack(invSlot).setTag(tag);
+
 					PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
 
 					passedData.writeBlockPos(featureLocation);
