@@ -1,9 +1,13 @@
-# Fabric Example Mod
+# Find Your Way
 
-## Setup
+## What it does
 
-For setup instructions please see the [fabric wiki page](https://fabricmc.net/wiki/tutorial:setup) that relates to the IDE that you are using.
+Adds several new compasses to the game! This release is inteded for use with Fabric Mod Loader. It is still in Alpha. Most features will be missing or incomple
 
 ## License
 
-This template is available under the CC0 license. Feel free to learn from it and incorporate it in your own projects.
+MIT License
+
+## Other
+
+I give my permission for this mod to be distributed in modpacks.
