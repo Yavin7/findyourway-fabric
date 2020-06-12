@@ -22,15 +22,17 @@ import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionType;
 import net.yseven.findyourway.FindYourWay;
 
 public class StructureCompass extends Item {
-    CompoundTag targetLocation = new CompoundTag();
     private String targetType;
+    private DimensionType targetDimension;
 
-    public StructureCompass(String targetType, Settings settings) {
+    public StructureCompass(String targetType, DimensionType dimension,  Settings settings) {
         super(settings);
         this.targetType = targetType;
+        this.targetDimension = dimension;
         this.addPropertyGetter(new Identifier("angle"), new ItemPropertyGetter() {
 
             @Environment(EnvType.CLIENT)
@@ -42,7 +44,8 @@ public class StructureCompass extends Item {
 
             @Environment(EnvType.CLIENT)
             public float call(ItemStack stack, @Nullable World world, @Nullable LivingEntity user) {
-                if (user == null && !stack.isInFrame()) {
+                if(!stack.hasTag()) {stack.setTag(new CompoundTag());}
+                if (user == null && !stack.isInFrame() || stack.getTag().isEmpty()) {
                     return 0.0F;
                 } else {
                     boolean bl = user != null;
@@ -52,10 +55,10 @@ public class StructureCompass extends Item {
                     }
 
                     double g;
-                    if (world.dimension.hasVisibleSky()) {
+                    if (world.dimension.getType() == StructureCompass.this.targetDimension) {
                         double d = bl ? (double) ((Entity) entity).yaw : this.getYaw((ItemFrameEntity) entity);
                         d = MathHelper.floorMod(d / 360.0D, 1.0D);
-                        double e = this.getAngleToTarget(world, (Entity) entity, StructureCompass.this.targetType)
+                        double e = this.getAngleToTarget(world, (Entity) entity, StructureCompass.this.targetType, stack)
                                 / 6.2831854820251465D;
                         g = 0.5D - (d - 0.25D - e);
                     } else {
@@ -86,26 +89,18 @@ public class StructureCompass extends Item {
 
             @Environment(EnvType.CLIENT)
             private double getYaw(ItemFrameEntity entity) {
-                if(StructureCompass.this.targetLocation.isEmpty()) {
-                    return 0;
-                } else {
-                    return (double) MathHelper.wrapDegrees(180 + entity.getHorizontalFacing().getHorizontal() * 90);
-                }
+                return (double) MathHelper.wrapDegrees(180 + entity.getHorizontalFacing().getHorizontal() * 90);
             }
 
             @Environment(EnvType.CLIENT)
-            private double getAngleToTarget(World world, Entity entity, String target) {
-                if(StructureCompass.this.targetLocation.isEmpty()) {
+            private double getAngleToTarget(World world, Entity entity, String target, ItemStack stack) {
+                if(!stack.getTag().contains("posx")){
                     return 0;
                 } else {
-                    return Math.atan2((double) StructureCompass.this.targetLocation.getInt("posZ") - entity.getZ(), (double) targetLocation.getInt("posX") - entity.getX());
+                    return Math.atan2((double) stack.getTag().getInt("posX") - entity.getZ(), (double) stack.getTag().getInt("posX") - entity.getX());
                 }
             }
         });
-    }
-
-    public void setTargetLocation(CompoundTag targetLocation) {
-        this.targetLocation = targetLocation;
     }
 
     @Override
@@ -118,10 +113,6 @@ public class StructureCompass extends Item {
             passedData.writeInt(playerEntity.inventory.selectedSlot);
     
             ClientSidePacketRegistry.INSTANCE.sendToServer(FindYourWay.PROVIDE_FEATURE_POSITION_ID, passedData);
-        }
-        
-        if(!this.targetLocation.isEmpty()) {
-            System.out.println( "X: " + this.targetLocation.getInt("posX") + " Z: " + this.targetLocation.getString("posZ"));
         }
         return new TypedActionResult<>(ActionResult.SUCCESS, playerEntity.getStackInHand(hand));
     }
