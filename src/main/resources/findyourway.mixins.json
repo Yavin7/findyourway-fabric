@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.yseven.findyourway.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+  ],
+  "client": [
+    "SplashMessageMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

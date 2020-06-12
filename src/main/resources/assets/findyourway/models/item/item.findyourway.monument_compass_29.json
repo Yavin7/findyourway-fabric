@@ -1,0 +1,6 @@
+{
+    "parent": "item/handheld",
+    "textures": {
+        "layer0": "findyourway:items/monument_compass_29"
+    }
+}

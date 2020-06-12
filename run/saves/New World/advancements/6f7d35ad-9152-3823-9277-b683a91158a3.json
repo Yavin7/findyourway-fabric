@@ -1,0 +1,9 @@
+{
+  "minecraft:adventure/adventuring_time": {
+    "criteria": {
+      "minecraft:jungle_hills": "2020-06-08 20:49:44 -0500"
+    },
+    "done": false
+  },
+  "DataVersion": 2230
+}
